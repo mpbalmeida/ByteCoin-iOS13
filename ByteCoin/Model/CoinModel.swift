@@ -10,4 +10,5 @@ import Foundation
 
 public struct CoinModel: Codable {
     public var rate: Double
+    public var time: Date
 }

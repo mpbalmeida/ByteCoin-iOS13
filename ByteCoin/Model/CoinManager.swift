@@ -52,11 +52,30 @@ struct CoinManager {
     
     func parseJSON(coinData: Data) -> CoinModel? {
         let decoder = JSONDecoder()
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        decoder.dateDecodingStrategy = .custom({ decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
+            
+            print("Will throw exception")
+            
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+        })
         do {
             let decodedData = try decoder.decode(CoinData.self, from: coinData)
+            print(decodedData)
             let rate = decodedData.rate
+            let time = decodedData.time
             
-            return CoinModel(rate: rate)
+            print(rate)
+            
+            return CoinModel(rate: rate, time: time)
             
         } catch {
             delegate?.didFailWithError(error: error)
