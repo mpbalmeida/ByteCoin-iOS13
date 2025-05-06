@@ -24,7 +24,6 @@ struct CoinManager {
     
     func getCoinPrice(for currency: String) {
         let urlString = "\(baseURL)/\(currency)?apikey=\(apiKey)"
-        print(urlString)
         performRequest(with: urlString)
     }
     
@@ -63,19 +62,15 @@ struct CoinManager {
                 return date
             }
             
-            print("Will throw exception")
-            
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
         })
         do {
             let decodedData = try decoder.decode(CoinData.self, from: coinData)
-            print(decodedData)
             let rate = decodedData.rate
             let time = decodedData.time
+            let coin = decodedData.asset_id_quote
             
-            print(rate)
-            
-            return CoinModel(rate: rate, time: time)
+            return CoinModel(rate: rate, time: time, coin: coin)
             
         } catch {
             delegate?.didFailWithError(error: error)

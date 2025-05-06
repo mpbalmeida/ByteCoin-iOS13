@@ -11,4 +11,5 @@ import Foundation
 struct CoinData: Decodable {
     let time: Date
     let rate: Double
+    let asset_id_quote: String
 }
